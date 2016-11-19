@@ -21,9 +21,7 @@ Eisman = Base.classes.eisman
 app = Flask(__name__)
 session = Session(engine)
 
-
-@app.route('/')
-def index():
+def make_plot(timestamp=None):
     with open('schleswig-holstein.geojson', 'r') as geofile:
         sh = geojson.load(geofile)
     features = sh['features']
@@ -37,13 +35,26 @@ def index():
         for coord in coords:
             lons.append([c[0] for c in coord[0]])
             lats.append([c[1] for c in coord[0]])
-    eismans = session.query(Eisman).all()
+    if timestamp:
+        print(timestamp)
+        eismans = session.query(Eisman).filter(Eisman.datetime_ab <= timestamp, Eisman.datetime_bis >= timestamp)
+    else:
+        eismans = session.query(Eisman).all()
     plot = figure()
     plot.patches(lons, lats, fill_alpha=0.2)
     plot.circle(x=[e.lon for e in eismans],
                 y=[e.lat for e in eismans])
     html = file_html(plot, CDN, "my plot")
     return html
+
+@app.route('/')
+def index():
+    return make_plot()
+
+
+@app.route('/<timestamp>')
+def timestamp(timestamp):
+    return make_plot(timestamp)
 
 
 if __name__ == '__main__':
