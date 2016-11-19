@@ -21,7 +21,8 @@ Eisman = Base.classes.eisman
 app = Flask(__name__)
 session = Session(engine)
 
-def make_plot(timestamp=None, template='ui.html', id=None):
+# id is only used for slide show if not provided it is a static page
+def make_plot(timestamp=None, id=None):
     with open('schleswig-holstein.geojson', 'r') as geofile:
         sh = geojson.load(geofile)
     features = sh['features']
@@ -36,55 +37,61 @@ def make_plot(timestamp=None, template='ui.html', id=None):
             lons.append([c[0] for c in coord[0]])
             lats.append([c[1] for c in coord[0]])
     if timestamp:
-        print(timestamp)
-        eismans = session.query(Eisman).filter(Eisman.datetime_ab <= timestamp, Eisman.datetime_bis >= timestamp)
+        eismans = session.query(Eisman).filter(Eisman.datetime_ab <= timestamp,
+                                               Eisman.datetime_bis >= timestamp)
     else:
         eismans = session.query(Eisman).all()
     plot = figure()
     plot.patches(lons, lats, fill_alpha=0.2)
     plot.circle(x=[e.lon for e in eismans],
-                y=[e.lat for e in eismans])
-    #html = file_html(plot, CDN, "my plot")
+                y=[e.lat for e in eismans],
+                size=10)
     script, div = components(plot)
-    return render_template(template, script=Markup(script), div=Markup(div), id=id)
+    return render_template('ui_show.html', script=Markup(script),
+                            div=Markup(div), id=id, timestamp=timestamp)
+
+connection = engine.connect()
+sql = "SELECT datetime_bis FROM eisman GROUP BY datetime_bis ORDER BY datetime_bis DESC LIMIT 0,200;"
+result =  connection.execute(sql)
+ts = []
+for row in result:
+    ts.append(row[0][:-7])
+connection.close()
+
+#ts = [
+#'2016-11-10 14:37:46',
+#'2016-11-07 08:30:39',
+#'2016-11-07 08:30:37',
+#'2016-11-07 08:30:36',
+#'2016-11-07 08:29:26',
+#'2016-11-07 08:29:25',
+#'2016-11-07 08:29:22',
+#'2016-11-07 08:29:14',
+#'2016-11-07 08:29:08',
+#'2016-11-07 08:29:05',
+#'2016-11-07 07:09:13',
+#'2016-11-07 07:08:20',
+#'2016-11-07 05:55:22',
+#'2016-11-07 05:54:12',
+#'2016-11-07 05:51:39',
+#'2016-11-07 05:51:28',
+#'2016-11-07 05:51:26',
+#'2016-11-06 22:30:25',
+#'2016-11-06 22:21:07',
+#'2016-11-06 22:09:59']
+
 
 @app.route('/')
-def index():
-    return make_plot()
-
-
-@app.route('/<timestamp>')
-def timestamp(timestamp):
-    return make_plot(timestamp)
-
-ts = [
-'2016-11-10 14:37:46',
-'2016-11-07 08:30:39',
-'2016-11-07 08:30:37',
-'2016-11-07 08:30:36',
-'2016-11-07 08:29:26',
-'2016-11-07 08:29:25',
-'2016-11-07 08:29:22',
-'2016-11-07 08:29:14',
-'2016-11-07 08:29:08',
-'2016-11-07 08:29:05',
-'2016-11-07 07:09:13',
-'2016-11-07 07:08:20',
-'2016-11-07 05:55:22',
-'2016-11-07 05:54:12',
-'2016-11-07 05:51:39',
-'2016-11-07 05:51:28',
-'2016-11-07 05:51:26',
-'2016-11-06 22:30:25',
-'2016-11-06 22:21:07',
-'2016-11-06 22:09:59']
+@app.route('/<int:id>')
+def timestamp(id=0):
+    return make_plot(timestamp=ts[id], id=None)
 
 
 @app.route('/show/<int:id>')
 def start_show(id):
-    if id == 19:
-        return make_plot(timestamp=ts[id], template='ui.html')
-    return make_plot(timestamp=ts[id], template='ui_show.html', id=id)
+    if id == 199:
+        return make_plot(timestamp=ts[id], id=None)
+    return make_plot(timestamp=ts[id], id=id)
 
 
 if __name__ == '__main__':
