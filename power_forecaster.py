@@ -21,7 +21,7 @@ Eisman = Base.classes.eisman
 app = Flask(__name__)
 session = Session(engine)
 
-def make_plot(timestamp=None):
+def make_plot(timestamp=None, template='ui.html', id=None):
     with open('schleswig-holstein.geojson', 'r') as geofile:
         sh = geojson.load(geofile)
     features = sh['features']
@@ -46,7 +46,7 @@ def make_plot(timestamp=None):
                 y=[e.lat for e in eismans])
     #html = file_html(plot, CDN, "my plot")
     script, div = components(plot)
-    return render_template('ui.html', script=Markup(script), div=Markup(div))
+    return render_template(template, script=Markup(script), div=Markup(div), id=id)
 
 @app.route('/')
 def index():
@@ -56,6 +56,35 @@ def index():
 @app.route('/<timestamp>')
 def timestamp(timestamp):
     return make_plot(timestamp)
+
+ts = [
+'2016-11-10 14:37:46',
+'2016-11-07 08:30:39',
+'2016-11-07 08:30:37',
+'2016-11-07 08:30:36',
+'2016-11-07 08:29:26',
+'2016-11-07 08:29:25',
+'2016-11-07 08:29:22',
+'2016-11-07 08:29:14',
+'2016-11-07 08:29:08',
+'2016-11-07 08:29:05',
+'2016-11-07 07:09:13',
+'2016-11-07 07:08:20',
+'2016-11-07 05:55:22',
+'2016-11-07 05:54:12',
+'2016-11-07 05:51:39',
+'2016-11-07 05:51:28',
+'2016-11-07 05:51:26',
+'2016-11-06 22:30:25',
+'2016-11-06 22:21:07',
+'2016-11-06 22:09:59']
+
+
+@app.route('/show/<int:id>')
+def start_show(id):
+    if id == 19:
+        return make_plot(timestamp=ts[id], template='ui.html')
+    return make_plot(timestamp=ts[id], template='ui_show.html', id=id)
 
 
 if __name__ == '__main__':
