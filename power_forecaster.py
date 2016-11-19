@@ -30,9 +30,13 @@ def index():
     lons = []
     lats = []
     for feature in features:
-        coords = list(geojson.utils.coords(feature))
-        lons.append([c[0] for c in coords])
-        lats.append([c[1] for c in coords])
+        if feature['geometry']['type'] == 'Polygon':
+            coords = [feature['geometry']['coordinates']]
+        else:
+            coords = feature['geometry']['coordinates']
+        for coord in coords:
+            lons.append([c[0] for c in coord[0]])
+            lats.append([c[1] for c in coord[0]])
     eismans = session.query(Eisman).all()
     plot = figure()
     plot.patches(lons, lats, fill_alpha=0.2)
