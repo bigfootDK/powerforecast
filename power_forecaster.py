@@ -1,47 +1,46 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask import render_template, request, redirect, url_for
+from sqlalchemy.ext.automap import automap_base
+from sqlalchemy.orm import Session
+from sqlalchemy import create_engine
+from bokeh.plotting import figure
+from bokeh.resources import CDN
+from bokeh.embed import file_html
+import geojson
 
+Base = automap_base()
+
+engine = create_engine("sqlite:///powerforecast.db")
+
+# reflect the tables in the database
+Base.prepare(engine, reflect=True)
+
+# mapped classes are now created with names by default
+# matching that of the table name.
+Eisman = Base.classes.eisman
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://jens:@localhost/flask'
-app.debug = True
-db = SQLAlchemy(app)
-
-
-class User2(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True)
-    email = db.Column(db.String(120), unique=True)
-
-    def __init__(self, username, email):
-        self.username = username
-        self.email = email
-
-    def __repr__(self):
-        return '<User %r>' % self.username
+session = Session(engine)
 
 
 @app.route('/')
 def index():
-    myUser = User2.query.all()
-    oneItem = User2.query.filter_by(username='jens').first()
-    return render_template('add_user.html', myUser=myUser, oneItem=oneItem)
-
-
-@app.route('/post_user', methods=['POST'])
-def post_user():
-    user = User2(request.form['username'], request.form['email'])
-    db.session.add(user)
-    db.session.commit()
-    return redirect(url_for('index'))
-
-
-@app.route('/profile/<the_username>')
-def profile(the_username):
-    user = User2.query.filter_by(username=the_username).first()
-    return render_template('profile.html', user=user)
+    with open('schleswig-holstein.geojson', 'r') as geofile:
+        sh = geojson.load(geofile)
+    features = sh['features']
+    lons = []
+    lats = []
+    for feature in features:
+        coords = list(geojson.utils.coords(feature))
+        lons.append([c[0] for c in coords])
+        lats.append([c[1] for c in coords])
+    eismans = session.query(Eisman).all()
+    plot = figure()
+    plot.patches(lons, lats, fill_alpha=0.2)
+    plot.circle(x=[e.lon for e in eismans],
+                y=[e.lat for e in eismans])
+    html = file_html(plot, CDN, "my plot")
+    return html
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
