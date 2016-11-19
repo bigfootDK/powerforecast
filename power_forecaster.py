@@ -1,10 +1,10 @@
-from flask import Flask
+from flask import Flask, render_template, Markup
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine
 from bokeh.plotting import figure
 from bokeh.resources import CDN
-from bokeh.embed import file_html
+from bokeh.embed import file_html, components
 import geojson
 
 Base = automap_base()
@@ -44,8 +44,9 @@ def make_plot(timestamp=None):
     plot.patches(lons, lats, fill_alpha=0.2)
     plot.circle(x=[e.lon for e in eismans],
                 y=[e.lat for e in eismans])
-    html = file_html(plot, CDN, "my plot")
-    return html
+    #html = file_html(plot, CDN, "my plot")
+    script, div = components(plot)
+    return render_template('ui.html', script=Markup(script), div=Markup(div))
 
 @app.route('/')
 def index():
