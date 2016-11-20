@@ -1,3 +1,19 @@
+"""Creates a sqlite database with processed data from the data/raw directory.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+"""
+
 import pandas
 import os
 from sqlalchemy import create_engine
@@ -21,11 +37,11 @@ columns = ['anlageschl',
 
 df = pandas.DataFrame()
 for f in files:
-    x = pandas.read_csv('eisman/'+f, sep=';', encoding='ISO-8859-1', dtype=str,
-                        names=columns)
+    x = pandas.read_csv('data/raw/eisman/'+f, sep=';', encoding='ISO-8859-1',
+                        dtype=str, names=columns)
     df = df.append(x)
 
-plants = pandas.read_csv('renewable_power_plants_SH.csv', dtype=str)
+plants = pandas.read_csv('data/raw/renewable_power_plants_SH.csv', dtype=str)
 
 df = pandas.merge(df, plants, how='left', left_on='anlageschl',
                   right_on='eeg_id')

@@ -1,3 +1,23 @@
+"""This is the main file for powerforecast.
+
+Usage:
+Run python power_forecaster.py and point your webbrowser to
+<http://localhost:5000>.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+"""
+
 from flask import Flask, render_template, Markup
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import Session
@@ -9,7 +29,7 @@ import geojson
 
 Base = automap_base()
 
-engine = create_engine("sqlite:///powerforecast.db")
+engine = create_engine("sqlite:///data/powerforecast.db")
 
 # reflect the tables in the database
 Base.prepare(engine, reflect=True)
@@ -21,9 +41,10 @@ Eisman = Base.classes.eisman
 app = Flask(__name__)
 session = Session(engine)
 
+
 # id is only used for slide show if not provided it is a static page
 def make_plot(timestamp=None, id=None):
-    with open('schleswig-holstein.geojson', 'r') as geofile:
+    with open('data/schleswig-holstein.geojson', 'r') as geofile:
         sh = geojson.load(geofile)
     features = sh['features']
     lons = []
@@ -50,35 +71,15 @@ def make_plot(timestamp=None, id=None):
     return render_template('ui_show.html', script=Markup(script),
                             div=Markup(div), id=id, timestamp=timestamp)
 
+
 connection = engine.connect()
 sql = "SELECT datetime_bis FROM eisman GROUP BY datetime_bis ORDER BY datetime_bis DESC LIMIT 0,200;"
 result =  connection.execute(sql)
+
 ts = []
 for row in result:
     ts.append(row[0][:-7])
 connection.close()
-
-#ts = [
-#'2016-11-10 14:37:46',
-#'2016-11-07 08:30:39',
-#'2016-11-07 08:30:37',
-#'2016-11-07 08:30:36',
-#'2016-11-07 08:29:26',
-#'2016-11-07 08:29:25',
-#'2016-11-07 08:29:22',
-#'2016-11-07 08:29:14',
-#'2016-11-07 08:29:08',
-#'2016-11-07 08:29:05',
-#'2016-11-07 07:09:13',
-#'2016-11-07 07:08:20',
-#'2016-11-07 05:55:22',
-#'2016-11-07 05:54:12',
-#'2016-11-07 05:51:39',
-#'2016-11-07 05:51:28',
-#'2016-11-07 05:51:26',
-#'2016-11-06 22:30:25',
-#'2016-11-06 22:21:07',
-#'2016-11-06 22:09:59']
 
 
 @app.route('/')
