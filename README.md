@@ -1,5 +1,13 @@
 # powerforecast
-The power forecaster for idealists.
-Predicts the contributions of solar and wind energy in the power network of Schleswig-Holstein for the following 24 hours. This tells us Fischkoepfe if we should do our laundry right now or better wait for a few hours.  
+The power forecaster for idealists (in development).
 
-https://wiki.kreativhack.de/kh16/projects/powerforecast/start
+Shall predicts the contributions of solar and wind energy in the power network
+of Schleswig-Holstein for the following 24 hours. This tells us Fischkoepfe if
+we should do our laundry right now or better wait for a few hours.
+
+Initiated at [KreativHack 2016 in Kiel](https://wiki.kreativhack.de/kh16/projects/powerforecast/start).
+
+
+# How to run it
+Just run `python power_forecaster.py` and point your prowser to
+http://localhost:5000 to see the actual state.
