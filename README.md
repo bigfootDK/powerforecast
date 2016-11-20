@@ -9,5 +9,5 @@ Initiated at [KreativHack 2016 in Kiel](https://wiki.kreativhack.de/kh16/project
 
 
 # How to run it
-Just run `python power_forecaster.py` and point your prowser to
-http://localhost:5000 to see the actual state.
+Just run `python power_forecaster.py` and point your browser to
+[http://localhost:5000](http://localhost:5000) to see the actual state.
