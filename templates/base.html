@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Power forecaster</title>
+    {% if time_marching == True %}
+        {% if hour == 24 and day < day_max %} <!-- day (Jahresverlauf) -->
+            <meta charset="utf-8" http-equiv="refresh"
+                  content={{"2;url="+url_for('eisman', day=day+1, hour=hour)}}>
+        {% elif hour < 23 %}  <!-- hour (Tagesverlauf) -->
+            <meta charset="utf-8" http-equiv="refresh"
+                  content={{"2;url="+url_for('eisman', day=day, hour=hour+1)}}>
+        {% endif %}
+    {%else%}
+         <meta charset="utf-8">
+    {%endif%}
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/bokeh_plot.ico') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <link href="http://cdn.pydata.org/bokeh/release/bokeh-0.12.3.min.css" rel="stylesheet" type="text/css">
+    <link href="http://cdn.pydata.org/bokeh/release/bokeh-widgets-0.12.3.min.css" rel="stylesheet" type="text/css">
+
+    <script src="http://cdn.pydata.org/bokeh/release/bokeh-0.12.3.min.js"></script>
+    <script src="http://cdn.pydata.org/bokeh/release/bokeh-widgets-0.12.3.min.js"></script>
+    {{ script }}
+
+</head>
+
+<header>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                      data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <div class="navbar-brand">
+                    <a href="{{ url_for('index') }}">Power forecaster</a>
+                </div>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+
+                    <li class="{% block home_active %}{% endblock %}"><a href="{{ url_for('index') }}">Home</a></li>
+                    <li class="{% block eisman_active %}{% endblock %}">
+                        <a href="{{ url_for('eisman', day=day_min, hour=24) }}">Eisman-Einsätze
+                            <span class="sr-only">(current)</span></a></li>
+                    <li class="{% block prediction_active %}{% endblock %}">
+                        <a href="{{ url_for('prediction') }}">Vorhersage</a></li>
+                    {% block navbar %}
+                    {% endblock %}
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                            aria-expanded="false">Weitere Infos <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{{ url_for('data') }}">Datengrundlage</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="{{ url_for('impressum') }}">Über uns</a></li>
+                            <li><a href="{{ url_for('contact') }}">Kontakt</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
+
+
+</header>
+
+<body id="body">
+    {% block body %}
+    {% endblock %}
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+</body>
+
+<!-- not used since footer bounces up an down when marching through time
+<footer class="footer-distributed">
+    <img src="{{ url_for('static', filename='images/python-powered-w-200x80.png') }}" alt="python-powered">
+</footer>
+</html>
+-->

@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block eisman_active %}
+active
+{% endblock %}
+
+
+{% block body %}
+
+
+<div class="container">
+
+	<div data-role="main" class="ui-content">
+    <form action="{{ url_for('eisman', day=day, hour=hour) }}" method="post">
+
+    	<ul class="nav nav-tabs">
+        	<li role="presentation" {% if hour == 24%} class="active" {% endif %}>
+				<a type="submit" href="{{ url_for('eisman', day=day, hour=24) }}"
+				   style="color:grey;"><b>Jahresgang</b></a></li>
+        	<li role="presentation" {% if hour < 24 %} class="active" {% endif %}>
+			<a type="submit" href="{{ url_for('eisman', day=day, hour=0) }}"
+				style="color:grey;"><b>Tagesgang</b></a></li>
+    	</ul>
+
+		<div class="container" style="background-color:#F8F8FF;">
+			<div class="col-lg-6 col-md-6 col-sm-12 com-sm-12">
+				{% if hour == 24%}
+					<h5><b>Wähle Tag:</b></h5>
+				{% else %}
+					<h5><b>Wähle Stunde:</b></h5>
+				{% endif %}
+				<ul class="list-inline">
+                	<li><button class="btn btn-default btn-xs" onclick="subtract_one()">-</button></li>
+					{% if hour == 24 %}
+						<li><h5>{{ day_min }}</h5></li>
+						<li><input type="range" name="day" id="slider" value="{{ day }}"
+								   min="{{ day_min }}" max="{{ day_max }}" onchange="show_value(this.value)"></li>
+						<li><h5>{{ day_max }}</h5></li>
+						<input type="hidden" name="hour" id="hour" value="{{ hour }}">
+					{% else %}
+						<li><h5>0</h5></li>
+						<li><input type="range" name="hour" id="slider" value="{{ hour }}"
+								   min="0" max="23" onchange="show_value(this.value)"></li><li><h5>23</h5></li>
+						<input type="hidden" name="day" id="day" value="{{ day }}">
+					{% endif %}
+						<li><button class="btn btn-default btn-xs" onclick="add_one()">+</button></li>
+                    	{% if time_marching == False %}
+                       		<li id="update_button"> <button class="btn btn-success" type="submit"value="Aktualisiere">
+								Aktualisiere auf {% if hour == 24 %} Tag {% else %} Stunde {% endif %}
+                           		<span id="slider_value" style="font-weight: bold;"></span></button></li>
+                    	{% endif %}
+                </ul>
+
+                {% if time_marching == False %}
+                        <input class="btn btn-success" type="submit" name="time_marching" value="Zeige Einsatzverlauf">
+                {% else %}
+                        <input class="btn btn-danger" type="submit" name="time_marching"
+                               data-inline="true" value="Anhalten">
+                {% endif %}
+
+				<br><br>
+				<div class="panel panel-default">
+					{% if hour == 24 %}
+						<h5><p style="text-indent:10px;"><b>Netzengpässe vor {{ day }} Tagen ({{ date }}):</b></p></h5>
+    				{% else %}
+						<h5><p style="text-indent:10px;"><b>Netzengpässe vor {{ day }} Tagen ({{ date }})
+							in der {{ hour }}. Stunde:</b></p></h5>
+    				{% endif %}
+					{{ div }}
+				</div>
+        	</div>
+		</div>
+    </form>
+	</div>
+
+</div>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/slider.js') }}"></script>
+
+{% endblock %}
