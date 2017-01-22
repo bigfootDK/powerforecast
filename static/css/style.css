@@ -1,0 +1,46 @@
+
+/* navbar */
+.navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
+    color: #000;
+}
+
+.navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active >
+    a:hover, .navbar-default .navbar-nav > .active > a:focus {
+        color: white;
+        background-color: #030033;
+}
+
+.navbar-default {
+    background-color: #0f006f;
+    border-color: #030033;
+}
+
+.dropdown-menu > li > a:hover, .dropdown-menu > li > a:focus {
+    color: #262626;
+    text-decoration: none;
+    background-color: #66CCFF;
+}
+
+.nav > li > a:hover, .nav > li > a:focus {
+    text-decoration: none;
+    background-color: silver;
+}
+
+.navbar-default .navbar-nav > li > a {
+    color: white;
+}
+
+.navbar-brand a{
+    font-family: Impact, Charcoal, sans-serif;
+    color:  #d6d6d6;
+}
+
+/* -------------*/
+.nav-tabs>li.active>a {
+     background-color: #F8F8FF;
+}
+
+/* footer not used right now */
+.footer-distributed {
+      background-color: #030033;
+}

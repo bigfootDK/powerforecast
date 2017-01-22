@@ -22,7 +22,7 @@ pip install -r requirements.txt
 And run:
 
 ```bash
-python power_forecaster.py
+python webapp.py
 ```
 
 Then point your webbrowser to
