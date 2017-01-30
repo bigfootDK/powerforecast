@@ -85,9 +85,13 @@
 
 </body>
 
-<!-- not used since footer bounces up an down when marching through time
-<footer class="footer-distributed">
-    <img src="{{ url_for('static', filename='images/python-powered-w-200x80.png') }}" alt="python-powered">
-</footer>
-</html>
--->
+{% if time_marching == False %}
+    <footer class="footer-distributed">
+        <br>
+        <div class="container">
+            <img src="{{ url_for('static', filename='images/python-powered-w-200x80.png') }}" alt="python-powered">
+        </div>
+        <br>
+        .
+    </footer>
+{% endif %}
