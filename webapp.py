@@ -31,7 +31,7 @@ def show_plot(day, hour):
 @app.route('/')
 @app.route('/index')
 def index():
-    return render_template('index.html', day_min=eis.day_min)
+    return render_template('index.html', day_min=eis.day_min, time_marching=False)
 
 
 @app.route('/eisman/<int:day>/<int:hour>', methods=['GET', 'POST'])
@@ -52,22 +52,22 @@ def eisman(day, hour):
 
 @app.route('/prediction')
 def prediction():
-    return render_template('prediction.html', day_min=eis.day_min)
+    return render_template('prediction.html', day_min=eis.day_min, time_marching=False)
 
 
 @app.route('/data')
 def data():
-    return render_template('data.html', day_min=eis.day_min)
+    return render_template('data.html', day_min=eis.day_min, time_marching=False)
 
 
 @app.route('/impressum')
 def impressum():
-    return render_template('impressum.html', day_min=eis.day_min)
+    return render_template('impressum.html', day_min=eis.day_min, time_marching=False)
 
 
 @app.route('/contact')
 def contact():
-    return render_template('contact.html', day_min=eis.day_min)
+    return render_template('contact.html', day_min=eis.day_min, time_marching=False)
 
 
 if __name__ == '__main__':
