@@ -42,5 +42,10 @@
 
 /* footer not used right now */
 .footer-distributed {
-      background-color: #030033;
+      background-color: #0f006f;
+}
+
+/* no bullets in list */
+ul {
+  list-style-type: none;
 }
