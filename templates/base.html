@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>Power forecaster</title>
+	<title>Powerforecast</title>
     {% if time_marching == True %}
         {% if hour == 24 and day < day_max %} <!-- day (Jahresverlauf) -->
             <meta charset="utf-8" http-equiv="refresh"
@@ -41,7 +41,7 @@
                     <span class="icon-bar"></span>
                 </button>
                 <div class="navbar-brand">
-                    <a href="{{ url_for('index') }}">Power forecaster</a>
+                    <a href="{{ url_for('index') }}"><strong>Powerforecast</strong></a>
                 </div>
             </div>
 
@@ -49,24 +49,26 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
 
-                    <li class="{% block home_active %}{% endblock %}"><a href="{{ url_for('index') }}">Home</a></li>
+                    <li class="{% block home_active %}{% endblock %}">
+                        <a href="{{ url_for('index') }}"><strong>Home</strong></a></li>
                     <li class="{% block eisman_active %}{% endblock %}">
-                        <a href="{{ url_for('eisman', day=day_min, hour=24) }}">Eisman-Einsätze
+                        <a href="{{ url_for('eisman', day=day_min, hour=24) }}"><strong>Eisman-Einsätze</strong>
                             <span class="sr-only">(current)</span></a></li>
                     <li class="{% block prediction_active %}{% endblock %}">
-                        <a href="{{ url_for('prediction') }}">Vorhersage</a></li>
+                        <a href="{{ url_for('prediction') }}"><strong>Vorhersage</strong></a></li>
                     {% block navbar %}
                     {% endblock %}
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                            aria-expanded="false">Weitere Infos <span class="caret"></span></a>
+                           aria-expanded="false"><strong>Weitere Infos</strong><span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li><a href="{{ url_for('data') }}">Datengrundlage</a></li>
+                            <li><a href="{{ url_for('data') }}">Open Data</a></li>
                             <li role="separator" class="divider"></li>
-                            <li><a href="{{ url_for('impressum') }}">Über uns</a></li>
+                            <li><a href="{{ url_for('impressum') }}">Team</a></li>
                             <li><a href="{{ url_for('contact') }}">Kontakt</a></li>
+                            <li><a href="https://github.com/bigfootDK/powerforecast">Github</a></li>
                         </ul>
                     </li>
                 </ul>
